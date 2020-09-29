@@ -1,9 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import VuexPersistence from "vuex-persist";
 
 import { Task, TaskStatus } from "./../model/task.model";
 
 Vue.use(Vuex);
+
+const vuexPersist = new VuexPersistence({
+  storage: window.localStorage,
+});
 
 export default new Vuex.Store({
   state: {
@@ -26,7 +31,27 @@ export default new Vuex.Store({
         })
       );
     },
+    updateTask(
+      state,
+      {
+        task,
+        title,
+        description,
+        status,
+      }: { task: Task; title: string; description: string; status: TaskStatus }
+    ): void {
+      if (title) {
+        task.title = title;
+      }
+      if (description) {
+        task.description = description;
+      }
+      if (status) {
+        task.status = status;
+      }
+    },
   },
   actions: {},
   modules: {},
+  plugins: [vuexPersist.plugin],
 });

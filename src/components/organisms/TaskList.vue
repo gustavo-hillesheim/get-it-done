@@ -10,7 +10,7 @@
         :key="task.id"
         :task="task"
         @delete="$emit('delete', task)"
-        @change-status="$emit('change-status', { task, status: $event })"
+        @update="$emit('update', { task, ...$event })"
       />
     </div>
   </div>

@@ -6,7 +6,7 @@
         :tasks="todoTasks"
         @create="createTask('todo')"
         @delete="deleteTask($event)"
-        @change-status="changeTaskStatus($event.task, $event.status)"
+        @update="updateTask($event)"
       />
     </template>
     <template #in-progress>
@@ -15,7 +15,7 @@
         :tasks="inProgressTasks"
         @create="createTask('inProgress')"
         @delete="deleteTask($event)"
-        @change-status="changeTaskStatus($event.task, $event.status)"
+        @update="updateTask($event)"
       />
     </template>
     <template #done>
@@ -24,7 +24,7 @@
         :tasks="doneTasks"
         @create="createTask('done')"
         @delete="deleteTask($event)"
-        @change-status="changeTaskStatus($event.task, $event.status)"
+        @update="updateTask($event)"
       />
     </template>
   </TaskBoardTemplate>
@@ -69,10 +69,14 @@ export default Vue.extend({
     filterTasks(status: TaskStatus): Task[] {
       return this.tasks.filter((task: Task) => task.status === status);
     },
-    changeTaskStatus(task: Task, newStatus: TaskStatus): void {
-      if (task.status !== newStatus) {
-        task.status = newStatus;
-      }
+    updateTask(parameters: {
+      task: Task;
+      title: string;
+      description: string;
+      status: TaskStatus;
+    }): void {
+      console.log(parameters);
+      this.$store.commit("updateTask", parameters);
     },
   },
 });

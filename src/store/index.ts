@@ -38,17 +38,31 @@ export default new Vuex.Store({
         title,
         description,
         status,
-      }: { task: Task; title: string; description: string; status: TaskStatus }
+        isExpanded,
+      }: {
+        task: Task;
+        title: string;
+        description: string;
+        status: TaskStatus;
+        isExpanded: boolean;
+      }
     ): void {
+      console.log(arguments);
+      const newTask = { ...task };
       if (title) {
-        task.title = title;
+        newTask.title = title;
       }
       if (description) {
-        task.description = description;
+        newTask.description = description;
       }
-      if (status) {
-        task.status = status;
+      if (typeof status === "number") {
+        newTask.status = status;
       }
+      if (typeof isExpanded === "boolean") {
+        newTask.isExpanded = isExpanded;
+      }
+      const taskIndex = state.tasks.indexOf(task);
+      state.tasks.splice(taskIndex, 1, newTask);
     },
   },
   actions: {},

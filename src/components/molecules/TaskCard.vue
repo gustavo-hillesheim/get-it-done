@@ -8,12 +8,12 @@
         <input
           ref="titleInput"
           v-if="isEditing"
-          v-model="task.title"
-          :size="task.title.length"
-          @keydown.enter="stopEditing"
-          @blur="stopEditing"
+          v-model="editingTitle"
+          :size="editingTitle.length"
+          @keydown.enter="saveTitle"
+          @blur="saveTitle"
         />
-        <div v-else @click="startEditing">
+        <div v-else @click="startEditingTitle">
           {{ task.title }}
         </div>
       </div>
@@ -23,7 +23,8 @@
       <label>Descrição</label>
       <textarea
         class="task-description-editor"
-        v-model="task.description"
+        v-model="editingDescription"
+        @blur="saveDescription"
       ></textarea>
       <div class="task-status-changer">
         <div
@@ -74,19 +75,29 @@ export default Vue.extend({
   },
   data: () => ({
     isEditing: false,
+    editingTitle: "",
+    editingDescription: "",
   }),
+  created() {
+    this.editingDescription = this.task.description;
+  },
   methods: {
-    startEditing() {
+    startEditingTitle() {
       this.isEditing = true;
+      this.editingTitle = this.task.title;
       this.$nextTick().then(() =>
         (this.$refs.titleInput as HTMLElement).focus()
       );
     },
-    stopEditing() {
+    saveTitle() {
       this.isEditing = false;
+      this.$emit("update", { title: this.editingTitle });
     },
     toggleExpanded() {
-      this.task.isExpanded = !this.task.isExpanded;
+      this.$emit("update", { isExpanded: !this.task.isExpanded });
+    },
+    saveDescription() {
+      this.$emit("update", { description: this.editingDescription });
     },
     activeClass(statusName: StatusName): string {
       const status = statusMap[statusName];
@@ -94,9 +105,7 @@ export default Vue.extend({
     },
     changeStatus(statusName: StatusName): void {
       const status = statusMap[statusName];
-      if (status !== this.task.status) {
-        this.$emit("change-status", status);
-      }
+      this.$emit("update", { status });
     },
   },
 });
